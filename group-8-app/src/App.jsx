@@ -19,7 +19,7 @@ function App() {
   return (
     <Layout>
       <Routes>
-        <Route path="/" element={<Homepage />} />
+        <Route path="/homepage" element={<Homepage />} />
         <Route path="/auth" element={<Authentication />} />
         <Route path="/course" element={<CoursePage />} />
       </Routes>
