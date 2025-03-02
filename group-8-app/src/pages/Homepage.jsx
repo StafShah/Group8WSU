@@ -2,11 +2,9 @@ import React, { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import "./Homepage.css"
 import RecordsList from "../components/RecordsList";
-import { createClient } from "@supabase/supabase-js";
 
-// const supabase = createClient("https://YOUR_SUPABASE_URL", "YOUR_SUPABASE_ANON_KEY");
 
-export default function Homepage() {
+export default function Homepage({token, setToken}) {
   const records = [
     { title: "Math 101", timeRange: "8:00 AM - 9:30 AM", className: "Room A" },
     { title: "History 202", timeRange: "10:00 AM - 11:30 AM", className: "Room B" },
@@ -14,30 +12,31 @@ export default function Homepage() {
   ];
   // const [userEmail, setUserEmail] = useState(null);
   // const location = useLocation();
-  // const navigate = useNavigate();
-
+  const navigate = useNavigate();
   const accessId = new URLSearchParams(location.search).get("accessId");
 
-  // useEffect(() => {
-  //   const checkAuth = async () => {
-  //     const { data } = await supabase.auth.getUser();
-  //     console.log(data);
-  //     if (!data.session || !data.session.user) {
-  //       navigate("/auth"); 
-  //     }
-  //     const userEmail = data.session.user.email; // Assuming email is used for login
-  //     const userAccessId = userEmail.split("@")[0]; // Extract AccessID from email (e.g., abc123@wayne.edu → abc123)
-  //     console.log(userAccessId);
+  useEffect(() => {
+    const checkAuth = async () => {
+      if (!token || !token.user) {
+        alert("Authentication mismatch, please login again!");
+        sessionStorage.removeItem('token');
+        setToken(false);
+        navigate("/auth"); 
+        return;
+      }
 
-  //     setUserEmail(userAccessId);
+      console.log(token)
+      const userAccessId = token.user.email
+      if (userAccessId.slice(0, 6) !== accessId) {
+        alert("Authentication mismatch, please login again!");
+        sessionStorage.removeItem('token');
+        setToken(false);
+        navigate("/auth"); 
+      }
+    };
 
-  //     if (userAccessId !== accessId) {
-  //       navigate("/auth"); // Redirect if AccessID does not match
-  //     }
-  //   };
-
-  //   checkAuth();
-  // }, [navigate, accessId]);
+    checkAuth();
+  }, [navigate, accessId]);
 
   return (
     <div>

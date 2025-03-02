@@ -1,18 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { createClient } from "@supabase/supabase-js";
+import { supabase } from "../client";
 import "./Authentication.css";
 
-// Initialize Supabase client
-const supabaseUrl = 'https://fdkyxlscsxrqjowsxoqm.supabase.co';
-const supabaseKey = import.meta.env.VITE_SUPABASE_KEY;
-const supabase = createClient(supabaseUrl, supabaseKey);
-
-const Authentication = () => {
+const Authentication = ({setToken}) => {
   const [accessId, setAccessId] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const navigate = useNavigate();
+  // const supabase = createClient();
 
   useEffect(() => {
     document.body.style.backgroundColor = "#f8f8f8";
@@ -31,7 +27,7 @@ const Authentication = () => {
     }
 
     // Authenticate with Supabase
-    const { user, error } = await supabase.auth.signInWithPassword({
+    const { data, error } = await supabase.auth.signInWithPassword({
       email: `${accessId}@wayne.edu`, // Assuming email-based login
       password,
     });
@@ -39,6 +35,7 @@ const Authentication = () => {
     if (error) {
       setError(error.message);
     } else {
+      setToken(data)
       navigate(`/homepage?accessId=${accessId}`);
     }
   };
