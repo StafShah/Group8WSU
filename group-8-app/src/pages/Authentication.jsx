@@ -35,6 +35,16 @@ const Authentication = ({setToken}) => {
     if (error) {
       setError(error.message);
     } else {
+      let { data: user, error } = await supabase.rpc("retrieve_student", {
+        access_id_filter: accessId
+      });
+
+      if (error) {
+        console.error("Error fetching courses:", error);
+      } else {
+        data.user.user_metadata.first_name = user[0].first_name;
+        data.user.user_metadata.last_name = user[0].last_name;
+      }
       setToken(data)
       navigate(`/homepage?accessId=${accessId}`);
     }

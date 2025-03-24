@@ -2,11 +2,7 @@ import React, { useState, useEffect } from "react";
 import Select from "react-select";
 import "./Taskbar.css";
 import logo from "../images/logo-main.png";
-import { createClient } from "@supabase/supabase-js";
-
-const supabaseUrl = 'https://fdkyxlscsxrqjowsxoqm.supabase.co';
-const supabaseKey = import.meta.env.VITE_SUPABASE_KEY;
-const supabase = createClient(supabaseUrl, supabaseKey);
+import { supabase } from "../client";
 
 const selectStyle = {
   control: (base) => ({
