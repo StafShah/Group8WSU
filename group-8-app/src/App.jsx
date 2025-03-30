@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Routes, Route, useLocation } from "react-router-dom";
 import Authentication from "./pages/Authentication";
 import Homepage from "./pages/Homepage";
@@ -16,11 +16,24 @@ const Layout = ({ children }) => {
 };
 
 function App() {
+  const [token, setToken] = useState(false);
+
+  if(token) {
+    sessionStorage.setItem('token', JSON.stringify(token))
+  }
+
+  useEffect(() => {
+    if(sessionStorage.getItem('token')) {
+      let data = JSON.parse(sessionStorage.getItem('token'))
+      setToken(data)
+    } 
+  }, [])
+
   return (
     <Layout>
       <Routes>
-        <Route path="/" element={<Homepage />} />
-        <Route path="/auth" element={<Authentication />} />
+        {token?<Route path="/homepage" element={<Homepage token={token} setToken={setToken}/>} />:""}
+        <Route path="/auth" element={<Authentication setToken={setToken}/>} />
         <Route path="/course" element={<CoursePage />} />
       </Routes>
     </Layout>
