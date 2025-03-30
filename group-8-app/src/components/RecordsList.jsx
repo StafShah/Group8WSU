@@ -1,5 +1,5 @@
 import React from "react";
-import "./RecordsList.css"; // Import styles
+import "./RecordsList.css"; 
 
 const RecordsList = ({ records }) => {
   return (

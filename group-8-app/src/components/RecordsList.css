@@ -27,3 +27,19 @@
     font-size: 0.9rem;
     color: #888;
 }
+
+.record-button {
+    margin-top: 8px;
+    padding: 8px 12px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    background-color: #3b82f6;
+    color: white;
+}
+
+.delete-button {
+    background-color: #e63946;
+    margin-left: 10px;
+}

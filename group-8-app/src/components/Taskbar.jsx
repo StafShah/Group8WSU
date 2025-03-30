@@ -38,51 +38,55 @@ const Taskbar = () => {
   const token = JSON.parse(sessionStorage.getItem("token"));
   const navigate = useNavigate();
 
+  const fetchSubjects = async () => {
+    let { data: subjects, error } = await supabase.rpc("retrieve_subjects");
+    if (error) {
+      console.error("Error fetching subjects:", error);
+    } else {
+      const formattedSubjects = subjects.map((s) => ({
+        label: s.subject, 
+        value: s.subject,
+      }));
+      setSubject1(formattedSubjects);
+    }
+  };
+
+  const fetchCourses = async () => {
+    setOptions2([]);
+    setSelectedCourse(null);
+    setLoadingCourses(true);
+    let { data: courses, error } = await supabase.rpc("retrieve_courses", {
+      subject_filter: selectedSubject.value,
+    });
+
+    if (error) {
+      console.error("Error fetching courses:", error);
+    } else {
+      const formattedCourses = courses.map((c) => ({
+        label: c.course_number, 
+        value: c.course_number,
+      }));
+      setOptions2(formattedCourses);
+    }
+    setLoadingCourses(false);
+  };
+
+  const handleSearch = (e) => {
+    navigate(`/course?subject=${selectedSubject.value}&course=${selectedCourse.value}`);
+    setSelectedSubject(null);
+    setSelectedCourse(null);
+  }
+
   useEffect(() => {
-    const fetchSubjects = async () => {
-      let { data: subjects, error } = await supabase.rpc("retrieve_subjects");
-      if (error) {
-        console.error("Error fetching subjects:", error);
-      } else {
-        const formattedSubjects = subjects.map((s) => ({
-          label: s.subject, 
-          value: s.subject,
-        }));
-        setSubject1(formattedSubjects);
-      }
-    };
     fetchSubjects();
-  }, []);
+  }, [selectedSubject]);
 
   useEffect(() => {
-    if (!selectedSubject){
-      setOptions2([]);
-      setSelectedCourse(null);
-      return;
-    }  
-
-    const fetchCourses = async () => {
-      setOptions2([]);
-      setSelectedCourse(null);
-      setLoadingCourses(true);
-      let { data: courses, error } = await supabase.rpc("retrieve_courses", {
-        subject_filter: selectedSubject.value,
-      });
-
-      if (error) {
-        console.error("Error fetching courses:", error);
-      } else {
-        const formattedCourses = courses.map((c) => ({
-          label: c.course_number, 
-          value: c.course_number,
-        }));
-        setOptions2(formattedCourses);
-      }
-      setLoadingCourses(false);
-    };
-
-    fetchCourses();
+    if (selectedSubject) {
+      fetchCourses();
+    }
   }, [selectedSubject]);
+
 
   return (
     <div className="taskbar">
@@ -97,7 +101,7 @@ const Taskbar = () => {
       {/* Searchable Select Boxes */}
       <div className="taskbar-right">
         {/* Subject Select */}
-        <Select
+        <Select id="select-subject"
           options={subject1}
           placeholder="Select Subject"
           styles={selectStyle}
@@ -119,7 +123,7 @@ const Taskbar = () => {
         {/* Search Button */}
         <button 
         className="taskbar-button" 
-        onClick={() => navigate(`/course?subject=${selectedSubject.value}&course=${selectedCourse.value}`)} 
+        onClick={handleSearch} 
         disabled={!selectedSubject || !selectedCourse}
         >
           Search
