@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import Select from "react-select";
 import "./Taskbar.css";
 import logo from "../images/logo-main.png";
@@ -34,6 +35,8 @@ const Taskbar = () => {
   const [selectedCourse, setSelectedCourse] = useState(null);
   const [options2, setOptions2] = useState([]); // Course dropdown options
   const [loadingCourses, setLoadingCourses] = useState(false); // Loading state for courses
+  const token = JSON.parse(sessionStorage.getItem("token"));
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchSubjects = async () => {
@@ -84,7 +87,9 @@ const Taskbar = () => {
   return (
     <div className="taskbar">
       {/* Logo */}
-      <img src={logo} alt="Logo" className="taskbar-logo" />
+      <Link to={`/homepage?accessId=${token.user.email.slice(0, 6)}`}>
+        <img src={logo} alt="Logo" className="taskbar-logo" />
+      </Link>
 
       {/* Title Banner */}
       <h2 className="title">WSU Study Groups</h2>
@@ -112,7 +117,13 @@ const Taskbar = () => {
         />
 
         {/* Search Button */}
-        <button className="taskbar-button">Search</button>
+        <button 
+        className="taskbar-button" 
+        onClick={() => navigate(`/course?subject=${selectedSubject.value}&course=${selectedCourse.value}`)} 
+        disabled={!selectedSubject || !selectedCourse}
+        >
+          Search
+        </button>
       </div>
     </div>
   );

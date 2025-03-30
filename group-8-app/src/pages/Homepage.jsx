@@ -5,11 +5,6 @@ import RecordsList from "../components/RecordsList";
 import { supabase } from "../client";
 
 export default function Homepage({token, setToken}) {
-  // const records = [
-  //   { title: "Math 101", timeRange: "8:00 AM - 9:30 AM", className: "Room A" },
-  //   { title: "History 202", timeRange: "10:00 AM - 11:30 AM", className: "Room B" },
-  //   { title: "Physics 303", timeRange: "1:00 PM - 2:30 PM", className: "Room C" }
-  // ];
   const navigate = useNavigate();
   const [groups, setGroups] = useState([]);
   const accessId = new URLSearchParams(location.search).get("accessId");
@@ -22,7 +17,7 @@ export default function Homepage({token, setToken}) {
     if (error) {
       console.error("Supabase RPC error:", error);
     } else {
-      console.log("Groups data:", groups);
+      // console.log("Groups data:", groups);
       setGroups(groups);
     }
   };
