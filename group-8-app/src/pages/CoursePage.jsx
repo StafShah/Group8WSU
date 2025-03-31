@@ -24,6 +24,7 @@ export default function CoursePage() {
     const { data: groups, error } = await supabase.rpc("retrieve_groups", {
       subjectquery: subject,
       coursequery: course,
+      p_user_id: token.user.id
     });
 
     if (error) {
@@ -46,6 +47,48 @@ export default function CoursePage() {
     }
   };
 
+  const onRegister = async (record) => {
+    if (record.is_registered) {
+      const { data, error } = await supabase.rpc("delete_group_registration", {
+        p_group_id: record.group_id,
+        p_student_id: token.user.id,
+      }); 
+
+      if (error) {
+        alert(error);
+      } else {
+        alert("Successfully deregistered!");
+      }
+    } else {
+      const { data, error } = await supabase.rpc("insert_group_registration", {
+        p_group_id: record.group_id,
+        p_student_id: token.user.id,
+      }); 
+
+      if (error) {
+        alert(error);
+      } else {
+        alert("Successfully registered!");
+      }
+    }
+
+    fetchGroups();
+  };
+
+  const onDelete = async (record) => {
+    const { data, error } = await supabase.rpc("delete_group", {
+      p_group_id: record.group_id
+    });
+
+    if (error) {
+      alert(error);
+    } else {
+      alert("Successfully deleted group.");
+    }
+
+    fetchGroups();
+  };
+
   const resetFormData = () => {
     setFormData({
       date: "",
@@ -59,7 +102,7 @@ export default function CoursePage() {
   const cancelForm = () => {
     resetFormData();
     setShowModal(false);
-  }
+  };
 
   const handleInputChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -135,7 +178,7 @@ export default function CoursePage() {
           ) : (
             <>
               <h3>Study groups:</h3>
-              <RecordsList records={groups} />
+              <RecordsList records={groups} onRegisterToggle={onRegister} onDelete={onDelete} />
             </>
           )}
         </div>
