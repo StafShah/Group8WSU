@@ -1,6 +1,7 @@
 import React from "react";
 import "./RecordsList.css";
 
+/* Record list element for home page and course pages */
 const RecordsList = ({ records, onRegisterToggle, onDelete }) => {
   return (
     <div className="records-container">

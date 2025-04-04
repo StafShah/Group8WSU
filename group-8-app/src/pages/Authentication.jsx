@@ -8,14 +8,13 @@ const Authentication = ({setToken}) => {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const navigate = useNavigate();
-  // const supabase = createClient();
 
   useEffect(() => {
     document.body.style.backgroundColor = "#f8f8f8";
   }, []);
 
-  // AccessID regex pattern (Adjust as needed)
-  const accessIdRegex = /^[a-zA-Z]{2}\d{4}$/; // Example: 'ab1234'
+  // AccessID regex pattern
+  const accessIdRegex = /^[a-zA-Z]{2}\d{4}$/; 
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -32,6 +31,7 @@ const Authentication = ({setToken}) => {
       password,
     });
 
+    // Catch potential errors
     if (error) {
       setError(error.message);
     } else {

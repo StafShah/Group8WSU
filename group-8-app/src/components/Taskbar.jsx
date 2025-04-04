@@ -5,6 +5,7 @@ import "./Taskbar.css";
 import logo from "../images/logo-main.png";
 import { supabase } from "../client";
 
+/* Styling for select boxes (course and subject)*/
 const selectStyle = {
   control: (base) => ({
     ...base,
@@ -29,6 +30,7 @@ const selectStyle = {
   }),
 };  
 
+/* Taskbar element to carry over every page in application (except auth)*/
 const Taskbar = () => {
   const [subject1, setSubject1] = useState([]); // Subject dropdown options
   const [selectedSubject, setSelectedSubject] = useState(null); // Selected subject
@@ -38,6 +40,7 @@ const Taskbar = () => {
   const token = JSON.parse(sessionStorage.getItem("token"));
   const navigate = useNavigate();
 
+  {/* Grab subjects from backend */}
   const fetchSubjects = async () => {
     let { data: subjects, error } = await supabase.rpc("retrieve_subjects");
     if (error) {
@@ -51,6 +54,7 @@ const Taskbar = () => {
     }
   };
 
+  {/* Grab courses from backend with subject parameter */}
   const fetchCourses = async () => {
     setOptions2([]);
     setSelectedCourse(null);
@@ -71,6 +75,7 @@ const Taskbar = () => {
     setLoadingCourses(false);
   };
 
+  {/* Handle search button click to navigate to correct course page */}
   const handleSearch = (e) => {
     navigate(`/course?subject=${selectedSubject.value}&course=${selectedCourse.value}`);
     setSelectedSubject(null);
