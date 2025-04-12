@@ -10,6 +10,7 @@
     border-radius: 8px;
     padding: 16px;
     box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
+    position: relative;
 }
 
 .record-title {
@@ -21,11 +22,21 @@
 .record-subtitle {
     font-size: 1rem;
     color: #555;
+    margin: 4px 0;
 }
 
 .record-class {
     font-size: 0.9rem;
     color: #888;
+    margin: 4px 0;
+}
+
+/* Button container for alignment */
+.record-actions {
+    display: flex;
+    justify-content: flex-start;
+    gap: 10px;
+    margin-top: 12px;
 }
 
 .record-button {
@@ -37,9 +48,33 @@
     font-size: 0.9rem;
     background-color: #3b82f6;
     color: white;
+    transition: all 0.2s ease;
 }
 
+.record-button:hover {
+    opacity: 0.9;
+    transform: translateY(-1px);
+}
+
+/* Group Page Button */
+.group-button {
+    background-color: #10b981; /* Emerald green */
+}
+
+/* Delete Button */
 .delete-button {
     background-color: #e63946;
-    margin-left: 10px;
+}
+
+/* Virtual meeting indicator */
+.virtual-badge {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    background-color: #6366f1;
+    color: white;
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 0.7rem;
+    font-weight: bold;
 }
