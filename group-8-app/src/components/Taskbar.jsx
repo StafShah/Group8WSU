@@ -82,13 +82,24 @@ const Taskbar = () => {
     setSelectedCourse(null);
   }
 
+  {/* Handle logout button click */}
+  const handleLogout = () => {
+    sessionStorage.removeItem("token");
+    navigate("/auth");
+  };
+
+  // Fetch subjects only once on component mount
   useEffect(() => {
     fetchSubjects();
-  }, [selectedSubject]);
+  }, []);
 
+  // Fetch courses when subject selection changes
   useEffect(() => {
     if (selectedSubject) {
       fetchCourses();
+    } else {
+      setOptions2([]);
+      setSelectedCourse(null);
     }
   }, [selectedSubject]);
 
@@ -112,6 +123,7 @@ const Taskbar = () => {
           styles={selectStyle}
           className="taskbar-select"
           onChange={setSelectedSubject}
+          value={selectedSubject}
         />
 
         {/* Course Select (Disabled until subject is selected & data is fetched) */}
@@ -122,7 +134,7 @@ const Taskbar = () => {
           className="taskbar-select"
           isDisabled={!selectedSubject || loadingCourses}
           onChange={setSelectedCourse}
-          value={null ? setLoadingCourses : selectedCourse}
+          value={selectedCourse}
         />
 
         {/* Search Button */}
@@ -132,6 +144,14 @@ const Taskbar = () => {
         disabled={!selectedSubject || !selectedCourse}
         >
           Search
+        </button>
+
+        {/* Logout Button */}
+        <button 
+          className="taskbar-button logout-button" 
+          onClick={handleLogout}
+        >
+          Logout
         </button>
       </div>
     </div>

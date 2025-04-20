@@ -1,8 +1,10 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import "./RecordsList.css";
 
 /* Record list element for home page and course pages */
 const RecordsList = ({ records, onRegisterToggle, onDelete }) => {
+  const navigate = useNavigate();
   return (
     <div className="records-container">
       {records.map((record, index) => (
@@ -30,6 +32,15 @@ const RecordsList = ({ records, onRegisterToggle, onDelete }) => {
               Delete Course
             </button>
           )}
+          
+          {/* Group page button */}
+          <button
+            className="record-button details-button"
+            onClick={() => navigate(`/group?groupId=${record.group_id}`)}
+          >
+            Group Details
+          </button>
+          
         </div>
       ))}
     </div>

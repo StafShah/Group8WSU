@@ -38,13 +38,24 @@
 
 .taskbar-button {
     padding: 8px 16px;
-    margin-right: 25px;
+    margin-right: 10px;
     background-color: #3b82f6; /* Tailwind's blue-500 */
     border-radius: 4px;
     cursor: pointer;
     transition: background 0.2s;
+    color: white;
+    border: none;
 }
 
 .taskbar-button:hover {
     background-color: #2563eb; /* Tailwind's blue-600 */
+}
+
+.logout-button {
+    background-color: #ef4444; /* Tailwind's red-500 */
+    margin-right: 30px;
+}
+
+.logout-button:hover {
+    background-color: #dc2626; /* Tailwind's red-600 */
 }
