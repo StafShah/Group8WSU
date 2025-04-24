@@ -5,6 +5,7 @@ import { supabase } from "../client";
 import "./CoursePage.css";
 
 export default function CoursePage() {
+  // Initialize url parameters, token, and state variables for functionality
   const location = useLocation();
   const subject = new URLSearchParams(location.search).get("subject");
   const course = new URLSearchParams(location.search).get("course");
@@ -20,6 +21,7 @@ export default function CoursePage() {
     description: "",
   });
 
+  // Function for retrieving groups for specific course via Supabase procedure
   const fetchGroups = async () => {
     const { data: groups, error } = await supabase.rpc("retrieve_groups", {
       subjectquery: subject,
@@ -34,6 +36,7 @@ export default function CoursePage() {
     }
   };
 
+  // Function for retrieving groups for specific course via Supabase procedure
   const fetchCourses = async () => {
     const { data: courseInfo, error } = await supabase.rpc("retrieve_course", {
       subjectquery: subject,
@@ -47,7 +50,9 @@ export default function CoursePage() {
     }
   };
 
+  // Handle registration request from user
   const onRegister = async (record) => {
+    // Determine if action is register or unregister
     if (record.is_registered) {
       const { data, error } = await supabase.rpc("delete_group_registration", {
         p_group_id: record.group_id,
@@ -71,10 +76,12 @@ export default function CoursePage() {
         alert("Successfully registered!");
       }
     }
-
+    
+    // Refresh groups after action
     fetchGroups();
   };
 
+  // Handle delete request from user
   const onDelete = async (record) => {
     const { data, error } = await supabase.rpc("delete_group", {
       p_group_id: record.group_id
@@ -86,9 +93,11 @@ export default function CoursePage() {
       alert("Successfully deleted group.");
     }
 
+    // Refresh groups after action
     fetchGroups();
   };
 
+  // Function to reset form data on action
   const resetFormData = () => {
     setFormData({
       date: "",
@@ -99,17 +108,21 @@ export default function CoursePage() {
     });
   };
 
+  // Handler for form cancel button
   const cancelForm = () => {
     resetFormData();
     setShowModal(false);
   };
 
+  // Handler for form modifications
   const handleInputChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
+  // Handler for submission
   const handleSubmit = async (e) => {
     e.preventDefault();
+    // Retrieve times
     const startTimestamp = `${formData.date}T${formData.startTime}:00`;
     const endTimestamp = `${formData.date}T${formData.endTime}:00`;
 
@@ -118,6 +131,7 @@ export default function CoursePage() {
       return;
     }
 
+    // Insert group from form data via Supabase
     const { data, error } = await supabase.rpc("insert_group", {
       p_course_id: courseInfo?.[0]?.course_id, 
       p_created_by: token.user.id, 
@@ -141,10 +155,12 @@ export default function CoursePage() {
       } 
     }
 
+    // Close out form
     resetFormData();
     setShowModal(false);
   };
 
+  // Ensure proper params and reset upon render
   useEffect(() => {
     if (subject && course) {
       setGroups([]);
@@ -155,6 +171,7 @@ export default function CoursePage() {
     }
   }, [subject, course]);
 
+  // Set current date for group rendering
   const today = new Date().toISOString().split("T")[0];
 
   return (

@@ -4,6 +4,7 @@ import { supabase } from "../client";
 import { useNavigate } from "react-router-dom";
 
 export default function GroupPage() {
+  // Initialize url parameters, token, and state variables for functionality
   const groupId = new URLSearchParams(location.search).get("groupId");
   const token = JSON.parse(sessionStorage.getItem("token"));
   const [groupInfo, setGroupInfo] = useState([]);
@@ -13,6 +14,7 @@ export default function GroupPage() {
   const [replyTo, setReplyTo] = useState(null);
   const navigate = useNavigate();
 
+  // Retrieve group information from Supabase for group
   const fetchGroupInformation = async () => {
     const { data: groups, error } = await supabase.rpc("retrieve_group_information", {
       p_user_id: token.user.id,
@@ -26,6 +28,7 @@ export default function GroupPage() {
     }
   }
 
+  // Retrieve participants from Supabase for specified group
   const fetchParticipants = async () => {
     const { data: participants, error } = await supabase.rpc("retrieve_group_participants", {
       p_group_id: groupId
@@ -38,6 +41,7 @@ export default function GroupPage() {
     }
   }
 
+  // Retrieve thread messages from Supabase for specific group
   const fetchMessages = async () => {
     const { data: messages, error } = await supabase.rpc("retrieve_group_messages", {
       p_group_id: groupId
@@ -50,7 +54,9 @@ export default function GroupPage() {
     }
   }
 
+  // Handler function for register button by user
   const onRegister = async () => {
+    // Determine if user is registering or unregistering
     if (groupInfo?.[0]?.is_registered) {
       const { data, error } = await supabase.rpc("delete_group_registration", {
         p_group_id: groupId,
@@ -75,10 +81,12 @@ export default function GroupPage() {
       }
     }
 
+    // Refresh group information and participants for updated render
     fetchGroupInformation();
     fetchParticipants();
   };
 
+  // Group deletion handler via user
   const onDelete = async () => {
     const { error } = await supabase.rpc("delete_group", {
       p_group_id: groupId
@@ -90,9 +98,11 @@ export default function GroupPage() {
       alert("Successfully deleted group.");
     }
 
+    // Return to course after deletion
     handleBackToCourse();
   };
 
+  // Handle post for thread message
   const handleSendMessage = async () => {
     if (!newMessage.trim()) return;
 
@@ -112,6 +122,7 @@ export default function GroupPage() {
     }
   };
 
+  // Handle message deletion
   const handleDeleteMessage = async (messageId) => {
     const { error } = await supabase.rpc("delete_thread_message", {
       p_message_id: messageId
@@ -124,6 +135,7 @@ export default function GroupPage() {
     }
   };
 
+  // Initialize state variables on render
   useEffect(() => {
     setGroupInfo([]);
     fetchGroupInformation();
@@ -131,11 +143,14 @@ export default function GroupPage() {
     fetchMessages();
   }, []);
 
+  // Navigate back to course
   const handleBackToCourse = () => {
     navigate(`/course?subject=${groupInfo?.[0]?.course_code.slice(0, 3)}&course=${groupInfo?.[0]?.course_code.slice(3)}`);
   };
 
+  // Render messages for group
   const renderMessage = (message, depth = 0) => {
+    // Determine reply and author classifications for each message
     const replies = messages.filter(m => m.parent_id === message.message_id);
     const isAuthor = message.author_id === token.user.id;
     
@@ -164,6 +179,7 @@ export default function GroupPage() {
         >
           Reply
         </button>
+        { /* Increase depth (indent left) for each reply */ }
         {replies.map(reply => renderMessage(reply, depth + 1))}
       </div>
     );
